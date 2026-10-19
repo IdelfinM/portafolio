@@ -11,7 +11,7 @@ Since 2025 I've worked as a full-stack developer at a nearshore services company
 
 ## Infrastructure
 
-I run my own Ubuntu server with several production applications. Some use native nginx and PHP-FPM, others run in Docker Compose behind a TLS reverse proxy. This very site runs there in a container, with a static mirror so it stays available around the clock.
+I run my own Ubuntu server with several production applications. Some use native nginx and PHP-FPM, others run in Docker Compose behind a TLS reverse proxy. This site is published on GitHub Pages, and a copy runs there in a read-only Docker container.
 
 ## Languages
 

@@ -12,9 +12,10 @@ export const site = {
   cv: { es: '/cv/cv-es.pdf', en: '/cv/cv-en.pdf' },
   // Repositorio del propio sitio: se enlaza en el pie para quien quiera ver como esta hecho.
   repo: 'https://github.com/IdelfinM/portafolio',
-  // Dominio publico (espejo en Cloudflare Pages) y la copia del servidor casero en Docker, que se
-  // enlaza en el pie como evidencia de DevOps. astro.config.mjs toma `url` de aqui.
-  // PENDIENTE: sin dominio comprado todavia; verificar-dist.mjs bloquea publicar con example.dev.
-  url: 'https://example.dev',
-  selfHostedUrl: 'https://home.example.dev/',
+  // Dominio publico, servido por GitHub Pages (public/CNAME debe decir lo mismo). astro.config.mjs
+  // toma `url` de aqui.
+  url: 'https://idmdev.net',
+  // Copia en el servidor casero en Docker, enlazada en el pie como evidencia de DevOps. Vacio = no
+  // se enlaza (mientras su vhost y su certificado no esten publicados).
+  selfHostedUrl: '',
 } as const;

@@ -1,9 +1,9 @@
 # Portafolio - instrucciones para la IA
 
 Sitio portafolio de un ingeniero de software full-stack, pensado para entregarlo a reclutadores.
-Astro 7 (estatico) + Tailwind 4, bilingue ES/EN, sin backend. Se publica en dos sitios con el mismo
-`dist/`: un contenedor Docker en el servidor casero y un espejo en Cloudflare Pages (24/7, porque el
-servidor se apaga de noche). Detalle operativo en `docs/DEPLOY.md`.
+Astro 7 (estatico) + Tailwind 4, bilingue ES/EN, sin backend. Se publica en GitHub Pages
+(`idmdev.net`, 24/7, porque el servidor casero se apaga de noche) y en un contenedor Docker en ese
+servidor. Detalle operativo en `docs/DEPLOY.md`. **El repo es publico**: nada privado en el codigo.
 
 ## Reglas de contenido (no negociables)
 
@@ -32,7 +32,8 @@ servidor se apaga de noche). Detalle operativo en `docs/DEPLOY.md`.
 
 ## CSP estricta
 
-Las cabeceras (nginx del host y `public/_headers`) llevan `script-src 'self'; style-src 'self'`.
+La CSP (`<meta>` en `src/layouts/Base.astro` para GitHub Pages, cabecera en el nginx del host) lleva
+`script-src 'self'; style-src 'self'`.
 Por eso: `inlineStylesheets: 'never'`, ningun `<script>` en linea (los scripts van en `public/js/` con
 `is:inline src=...`), ningun atributo `style=`, ninguna fuente ni recurso de terceros. Tras cada
 build: `grep -rl '<style\|style="' dist` debe salir vacio.
@@ -43,5 +44,5 @@ build: `grep -rl '<style\|style="' dist` debe salir vacio.
 npm run build                    # genera dist/
 node scripts/verificar-dist.mjs  # barrera antes de publicar
 npx astro preview --port 4321    # revisar dist/ en local
-scripts/publicar.sh [servidor|espejo]   # build + verificacion + publicacion (ver docs/DEPLOY.md)
+scripts/publicar.sh [github|servidor]   # build + verificacion + publicacion (ver docs/DEPLOY.md)
 ```

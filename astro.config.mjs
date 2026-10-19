@@ -4,8 +4,8 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import { site } from './src/config/site.ts';
 
-// Sitio 100 % estatico: el mismo dist/ lo sirve el contenedor del 3020 y el espejo de
-// Cloudflare Pages. `site` solo se usa para las URL absolutas (canonical, hreflang, Open Graph).
+// Sitio 100 % estatico: el mismo dist/ lo sirven GitHub Pages (dominio publico) y el contenedor
+// del servidor casero. `site` solo se usa para las URL absolutas (canonical, hreflang, Open Graph).
 export default defineConfig({
   site: site.url,
   trailingSlash: 'always',

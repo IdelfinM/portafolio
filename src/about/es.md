@@ -11,7 +11,7 @@ Desde 2025 trabajo como desarrollador full-stack en una empresa de servicios nea
 
 ## Infraestructura
 
-Administro mi propio servidor Ubuntu, donde corren varias aplicaciones en producción. Unas usan nginx y PHP-FPM nativos y otras van en Docker Compose detrás de un proxy inverso con TLS. Este mismo sitio corre allí en un contenedor, y además tiene un espejo estático para estar disponible las 24 horas.
+Administro mi propio servidor Ubuntu, donde corren varias aplicaciones en producción. Unas usan nginx y PHP-FPM nativos y otras van en Docker Compose detrás de un proxy inverso con TLS. Este sitio se publica en GitHub Pages, y una copia corre allí en un contenedor Docker de solo lectura.
 
 ## Idiomas
 

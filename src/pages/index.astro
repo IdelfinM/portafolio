@@ -1,6 +1,7 @@
 ---
-// La raiz la redirigen nginx (contenedor) y _redirects (Cloudflare Pages) segun el idioma.
-// Esta pagina solo se ve si esa redireccion falta; por eso es una eleccion manual y no un script.
+// En el contenedor, nginx redirige la raiz segun Accept-Language y esta pagina no se ve. GitHub
+// Pages no puede redirigir: aqui el meta refresh lleva al espanol y los dos enlaces quedan como
+// eleccion manual (sin script, por la CSP).
 import '../styles/global.css';
 import { site } from '../config/site';
 import { routes } from '../i18n/ui';

@@ -1,0 +1,40 @@
+# Publica el sitio en GitHub Pages (idmdev.net) en cada push a main.
+# La verificacion corre dentro del build: si dist/ trae pendientes, dominios de ejemplo o IPs
+# privadas, el job falla y no se publica nada. Los patrones privados de .verificar.local no estan
+# aqui (no se versionan); esos los revisa scripts/publicar.sh antes del push.
+name: Publicar en GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Un push nuevo no cancela una publicacion a medias, pero si deja en espera las siguientes.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: withastro/action@v6
+        with:
+          node-version: 24
+          build-cmd: npm run build && node scripts/verificar-dist.mjs
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
