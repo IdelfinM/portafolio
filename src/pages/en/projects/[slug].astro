@@ -1,0 +1,14 @@
+---
+import ProjectView from '../../../views/ProjectView.astro';
+import { slugOf } from '../../../i18n/ui';
+import { getProjects } from '../../../lib/content';
+
+export async function getStaticPaths() {
+  const projects = await getProjects('en');
+  return projects.map((project) => ({ params: { slug: slugOf(project.id) }, props: { project } }));
+}
+
+const { project } = Astro.props;
+---
+
+<ProjectView lang="en" project={project} />

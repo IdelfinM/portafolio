@@ -1,0 +1,21 @@
+# Portafolio en el 3020. Un solo contenedor con nginx sirviendo el sitio estatico.
+# Publica SOLO en loopback: la puerta publica es el nginx del host, que pone TLS y cabeceras.
+name: portafolio
+
+services:
+  web:
+    build: .
+    image: portafolio/web:latest
+    ports:
+      - "127.0.0.1:${WEB_PORT:-8083}:8080"
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/cache/nginx
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 64m
+    pids_limit: 64

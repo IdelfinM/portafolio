@@ -1,0 +1,50 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import StackBadge from '../components/StackBadge.astro';
+import { caseUrl, projectUrl, routes, slugOf, useT, type Lang } from '../i18n/ui';
+import { getProjects, projectTitles } from '../lib/content';
+
+interface Props {
+  lang: Lang;
+  entry: CollectionEntry<'cases'>;
+}
+const { lang, entry } = Astro.props;
+const t = useT(lang);
+const other: Lang = lang === 'es' ? 'en' : 'es';
+const d = entry.data;
+const { Content } = await render(entry);
+const projectTitle = projectTitles(await getProjects(lang)).get(d.project);
+---
+
+<Base lang={lang} title={d.title} description={d.summary} altUrl={caseUrl(other, slugOf(entry.id))}>
+  <article class="container-page max-w-3xl py-14">
+    <a href={routes.cases[lang]} class="mb-6 inline-block text-sm text-accent-700 hover:underline dark:text-accent-300">
+      ← {t('case.back')}
+    </a>
+    <header class="mb-8">
+      {
+        projectTitle && (
+          <p class="mb-2 text-sm">
+            <span class="text-slate-500 dark:text-slate-400">{t('case.project')}:</span>{' '}
+            <a href={projectUrl(lang, d.project)} class="font-medium text-accent-700 hover:underline dark:text-accent-300">
+              {projectTitle}
+            </a>
+          </p>
+        )
+      }
+      <h1 class="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">{d.title}</h1>
+      <p class="mb-4 text-lg text-slate-600 dark:text-slate-300">{d.summary}</p>
+      <div class="flex flex-wrap gap-1.5">{d.tags.map((tag) => <StackBadge label={tag} />)}</div>
+    </header>
+
+    <p class="mb-10 rounded-lg border-l-4 border-accent-500 bg-accent-50 px-4 py-3 dark:bg-accent-900/30">
+      <span class="font-semibold">{t('case.result')}:</span>{' '}
+      {d.result}
+    </p>
+
+    <div class="prose max-w-none prose-slate dark:prose-invert prose-headings:tracking-tight prose-a:text-accent-700 dark:prose-a:text-accent-300">
+      <Content />
+    </div>
+  </article>
+</Base>

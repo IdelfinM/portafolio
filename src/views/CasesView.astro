@@ -1,0 +1,52 @@
+---
+import Base from '../layouts/Base.astro';
+import CaseCard from '../components/CaseCard.astro';
+import { routes, useT, type Lang } from '../i18n/ui';
+import { getCases, getProjects, projectTitles, tagsByFrequency } from '../lib/content';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useT(lang);
+const other: Lang = lang === 'es' ? 'en' : 'es';
+const cases = await getCases(lang);
+const titles = projectTitles(await getProjects(lang));
+const tags = tagsByFrequency(cases);
+---
+
+<Base lang={lang} title={t('cases.title')} altUrl={routes.cases[other]}>
+  <section class="container-page py-14">
+    <h1 class="mb-3 text-3xl font-bold tracking-tight">{t('cases.title')}</h1>
+    <p class="mb-8 max-w-2xl text-slate-600 dark:text-slate-400">{t('cases.intro')}</p>
+
+    {/* El filtro llega oculto y lo muestra filtro-casos.js: sin JS se ve la lista completa. */}
+    <div id="filtro-casos" class="mb-8 hidden flex-wrap gap-2" role="group" aria-label={t('cases.title')}>
+      <button type="button" data-tag="" aria-pressed="true" class="filtro">{t('cases.filter.all')}</button>
+      {
+        tags.map((tag) => (
+          <button type="button" data-tag={tag} aria-pressed="false" class="filtro">
+            {tag}
+          </button>
+        ))
+      }
+    </div>
+
+    <div id="lista-casos" class="grid gap-4 md:grid-cols-2">
+      {cases.map((c) => <CaseCard lang={lang} entry={c} projectTitle={titles.get(c.data.project)} />)}
+    </div>
+  </section>
+  {/* Fichero propio y no <script> procesado: la CSP del sitio es script-src 'self' sin inline. */}
+  <script is:inline src="/js/filtro-casos.js" defer></script>
+</Base>
+
+<style>
+  @reference "../styles/global.css";
+
+  .filtro {
+    @apply cursor-pointer rounded-full border border-slate-300 px-3 py-1 text-sm hover:border-accent-500 dark:border-slate-700;
+  }
+  .filtro[aria-pressed='true'] {
+    @apply border-accent-600 bg-accent-600 text-white;
+  }
+</style>

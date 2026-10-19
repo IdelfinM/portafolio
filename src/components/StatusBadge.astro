@@ -1,0 +1,20 @@
+---
+import { useT, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  status: 'production' | 'development' | 'private';
+}
+const { lang, status } = Astro.props;
+const t = useT(lang);
+
+const styles = {
+  production: 'bg-emerald-50 text-emerald-800 ring-emerald-600/20 dark:bg-emerald-950 dark:text-emerald-300',
+  development: 'bg-amber-50 text-amber-800 ring-amber-600/20 dark:bg-amber-950 dark:text-amber-300',
+  private: 'bg-slate-100 text-slate-700 ring-slate-500/20 dark:bg-slate-800 dark:text-slate-300',
+};
+---
+
+<span class:list={['inline-flex shrink-0 items-center whitespace-nowrap rounded-md px-2 py-0.5 text-xs font-medium ring-1 ring-inset', styles[status]]}>
+  {t(`status.${status}`)}
+</span>

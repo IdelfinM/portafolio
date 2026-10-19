@@ -1,0 +1,14 @@
+---
+import CaseView from '../../../views/CaseView.astro';
+import { slugOf } from '../../../i18n/ui';
+import { getCases } from '../../../lib/content';
+
+export async function getStaticPaths() {
+  const cases = await getCases('es');
+  return cases.map((entry) => ({ params: { slug: slugOf(entry.id) }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+---
+
+<CaseView lang="es" entry={entry} />

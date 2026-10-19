@@ -1,0 +1,123 @@
+---
+import '../styles/global.css';
+import { site } from '../config/site';
+import { routes, useT, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  title?: string;
+  description?: string;
+  // URL de la misma pagina en el otro idioma; sin ella el selector lleva a la portada.
+  altUrl?: string;
+}
+
+const { lang, title, description, altUrl } = Astro.props;
+const t = useT(lang);
+const other: Lang = lang === 'es' ? 'en' : 'es';
+const pageTitle = title ? `${title} · ${site.name}` : `${site.name} · ${t('hero.role')}`;
+const pageDescription = description ?? t('meta.description');
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const alternate = new URL(altUrl ?? routes.home[other], Astro.site);
+const current = Astro.url.pathname;
+// Mientras no haya dominio real, el enlace al servidor casero no lleva a ninguna parte: se oculta.
+const hasSelfHosted = !site.selfHostedUrl.includes('example.dev');
+
+const nav = [
+  { href: routes.projects[lang], label: t('nav.projects') },
+  { href: routes.cases[lang], label: t('nav.cases') },
+  { href: routes.about[lang], label: t('nav.about') },
+  { href: `${routes.home[lang]}#contacto`, label: t('nav.contact') },
+];
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang={lang} href={canonical} />
+    <link rel="alternate" hreflang={other} href={alternate} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="color-scheme" content="light dark" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={lang === 'es' ? 'es_DO' : 'en_US'} />
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <a
+      href="#contenido"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:rounded focus:bg-accent-600 focus:px-3 focus:py-2 focus:text-white"
+    >
+      {lang === 'es' ? 'Saltar al contenido' : 'Skip to content'}
+    </a>
+
+    <header class="sticky top-0 z-10 border-b border-slate-200/80 bg-white/85 backdrop-blur dark:border-slate-800 dark:bg-slate-950/85">
+      <div class="container-page flex items-center justify-between gap-4 py-3">
+        <a href={routes.home[lang]} class="flex items-center gap-2 font-semibold tracking-tight">
+          <span class="grid size-8 place-items-center rounded-md bg-accent-600 text-sm text-white">{site.initials}</span>
+          <span class="hidden sm:inline">{site.name}</span>
+        </a>
+        <nav aria-label={lang === 'es' ? 'Principal' : 'Main'}>
+          <ul class="flex flex-wrap items-center justify-end gap-x-4 gap-y-1 text-sm">
+            {
+              nav.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    aria-current={current === item.href ? 'page' : undefined}
+                    class="text-slate-600 hover:text-accent-700 aria-[current=page]:font-semibold aria-[current=page]:text-accent-700 dark:text-slate-300 dark:hover:text-accent-300 dark:aria-[current=page]:text-accent-300"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+            <li>
+              <a
+                href={altUrl ?? routes.home[other]}
+                hreflang={other}
+                lang={other}
+                class="rounded border border-slate-300 px-2 py-0.5 text-xs font-medium uppercase hover:border-accent-500 dark:border-slate-700"
+              >
+                <span aria-hidden="true">{other}</span>
+                <span class="sr-only">{t('nav.switch')}</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="contenido" class="flex-1">
+      <slot />
+    </main>
+
+    <footer class="border-t border-slate-200 py-8 text-sm text-slate-500 dark:border-slate-800 dark:text-slate-400">
+      <div class="container-page flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <p>© {new Date().getFullYear()} {site.name}</p>
+        <p class="flex flex-wrap gap-x-3">
+          {
+            hasSelfHosted && (
+              <>
+                <a href={site.selfHostedUrl} class="underline-offset-4 hover:text-accent-700 hover:underline dark:hover:text-accent-300">
+                  {t('footer.selfhosted')}
+                </a>
+                <span aria-hidden="true">·</span>
+              </>
+            )
+          }
+          <a href={site.repo} class="underline-offset-4 hover:text-accent-700 hover:underline dark:hover:text-accent-300">
+            {t('footer.source')}
+          </a>
+          <span aria-hidden="true">·</span>
+          <span>{t('footer.built')}</span>
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+---
+// La raiz la redirigen nginx (contenedor) y _redirects (Cloudflare Pages) segun el idioma.
+// Esta pagina solo se ve si esa redireccion falta; por eso es una eleccion manual y no un script.
+import '../styles/global.css';
+import { site } from '../config/site';
+import { routes } from '../i18n/ui';
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="refresh" content={`0; url=${routes.home.es}`} />
+    <title>{site.name}</title>
+    <link rel="canonical" href={new URL(routes.home.es, Astro.site)} />
+  </head>
+  <body class="grid min-h-screen place-items-center">
+    <p class="flex gap-4 text-lg">
+      <a href={routes.home.es} class="text-accent-700 underline">Español</a>
+      <a href={routes.home.en} lang="en" class="text-accent-700 underline">English</a>
+    </p>
+  </body>
+</html>

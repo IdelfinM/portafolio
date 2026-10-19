@@ -1,0 +1,92 @@
+---
+import { existsSync } from 'node:fs';
+import Base from '../layouts/Base.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import CaseCard from '../components/CaseCard.astro';
+import Contact from '../components/Contact.astro';
+import StackBadge from '../components/StackBadge.astro';
+import { site } from '../config/site';
+import { stackGroups } from '../config/stack';
+import { routes, useT, type Lang } from '../i18n/ui';
+import { getCases, getProjects, projectTitles } from '../lib/content';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useT(lang);
+const other: Lang = lang === 'es' ? 'en' : 'es';
+
+const projects = await getProjects(lang);
+const featured = projects.filter((p) => p.data.featured);
+const cases = (await getCases(lang)).filter((c) => c.data.featured).slice(0, 4);
+const titles = projectTitles(projects);
+// El boton del CV solo aparece cuando el PDF existe de verdad en public/.
+const hasCv = existsSync(`public${site.cv[lang]}`);
+---
+
+<Base lang={lang} altUrl={routes.home[other]}>
+  <section class="container-page py-16 sm:py-24">
+    <p class="mb-3 text-sm font-medium tracking-wide text-accent-700 uppercase dark:text-accent-300">{t('hero.role')}</p>
+    <h1 class="mb-5 text-4xl font-bold tracking-tight sm:text-5xl">{site.name}</h1>
+    <p class="mb-8 max-w-2xl text-lg text-slate-600 dark:text-slate-300">{t('hero.pitch')}</p>
+    <div class="flex flex-wrap gap-3">
+      <a href={routes.projects[lang]} class="rounded-lg bg-accent-600 px-4 py-2 font-medium text-white hover:bg-accent-700">
+        {t('hero.cta.projects')}
+      </a>
+      {
+        hasCv && (
+          <a href={site.cv[lang]} download class="rounded-lg border border-slate-300 px-4 py-2 font-medium hover:border-accent-500 dark:border-slate-700">
+            {t('hero.cta.cv')}
+          </a>
+        )
+      }
+      <a href="#contacto" class="rounded-lg px-4 py-2 font-medium text-accent-700 hover:underline dark:text-accent-300">
+        {t('hero.cta.contact')}
+      </a>
+    </div>
+  </section>
+
+  <section class="container-page pb-16" aria-labelledby="destacados">
+    <div class="mb-6 flex items-baseline justify-between gap-4">
+      <h2 id="destacados" class="text-2xl font-semibold tracking-tight">{t('home.featured')}</h2>
+      <a href={routes.projects[lang]} class="text-sm text-accent-700 hover:underline dark:text-accent-300">{t('home.featured.all')} →</a>
+    </div>
+    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {featured.map((p) => <ProjectCard lang={lang} project={p} />)}
+    </div>
+  </section>
+
+  <section class="border-y border-slate-200 bg-slate-50 py-16 dark:border-slate-800 dark:bg-slate-900/40" aria-labelledby="casos">
+    <div class="container-page">
+      <div class="mb-2 flex items-baseline justify-between gap-4">
+        <h2 id="casos" class="text-2xl font-semibold tracking-tight">{t('home.cases')}</h2>
+        <a href={routes.cases[lang]} class="text-sm text-accent-700 hover:underline dark:text-accent-300">{t('home.cases.all')} →</a>
+      </div>
+      <p class="mb-6 max-w-2xl text-slate-600 dark:text-slate-400">{t('home.cases.intro')}</p>
+      <div class="grid gap-4 md:grid-cols-2">
+        {cases.map((c) => <CaseCard lang={lang} entry={c} projectTitle={titles.get(c.data.project)} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-16" aria-labelledby="stack">
+    <h2 id="stack" class="mb-6 text-2xl font-semibold tracking-tight">{t('home.stack')}</h2>
+    <dl class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        stackGroups.map((g) => (
+          <div>
+            <dt class="mb-2 text-sm font-semibold">{g.label[lang]}</dt>
+            <dd class="flex flex-wrap gap-1.5">
+              {g.items.map((item) => (
+                <StackBadge label={typeof item === 'string' ? item : item[lang]} />
+              ))}
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  <Contact lang={lang} />
+</Base>

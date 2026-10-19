@@ -1,0 +1,36 @@
+---
+import { site } from '../config/site';
+import { useT, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useT(lang);
+
+// Sin formulario a proposito: un sitio estatico sin backend no tiene nada que atacar.
+const links = [
+  { label: site.email, href: `mailto:${site.email}` },
+  { label: 'LinkedIn', href: site.linkedin },
+  { label: 'GitHub', href: site.github },
+];
+---
+
+<section id="contacto" class="container-page scroll-mt-20 pb-20" aria-labelledby="contacto-titulo">
+  <div class="rounded-2xl bg-accent-900 px-6 py-10 text-white sm:px-10 dark:bg-accent-900/60">
+    <h2 id="contacto-titulo" class="mb-3 text-2xl font-semibold tracking-tight">{t('contact.title')}</h2>
+    <p class="mb-6 max-w-xl text-accent-100">{t('contact.text')}</p>
+    <ul class="flex flex-wrap gap-3">
+      {
+        links.map((l) => (
+          <li>
+            <a href={l.href} class="inline-block rounded-lg bg-white/10 px-4 py-2 font-medium ring-1 ring-white/20 hover:bg-white/20">
+              {l.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="mt-6 text-sm text-accent-100/80">{site.location[lang]}</p>
+  </div>
+</section>

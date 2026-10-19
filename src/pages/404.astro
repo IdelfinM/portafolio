@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+import { routes } from '../i18n/ui';
+---
+
+<Base lang="es" title="404">
+  <section class="container-page py-24 text-center">
+    <p class="mb-2 text-sm font-semibold text-accent-700 dark:text-accent-300">404</p>
+    <h1 class="mb-4 text-3xl font-bold tracking-tight">Página no encontrada · Page not found</h1>
+    <p class="flex justify-center gap-6">
+      <a href={routes.home.es} class="text-accent-700 hover:underline dark:text-accent-300">Ir al inicio</a>
+      <a href={routes.home.en} lang="en" class="text-accent-700 hover:underline dark:text-accent-300">Go home</a>
+    </p>
+  </section>
+</Base>

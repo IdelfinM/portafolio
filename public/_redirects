@@ -1,0 +1,3 @@
+# Espejo en Cloudflare Pages: la raiz va al espanol. El 3020 elige por Accept-Language en
+# docker/nginx/default.conf; Pages no puede, asi que aqui el ingles queda a un clic.
+/  /es/  302

@@ -1,0 +1,21 @@
+# Envoltorio de compose para que el Panel 3020 maneje el portafolio con start/stop, igual que
+# lab-reserva.service. Se instala en /etc/systemd/system/portafolio.service reemplazando
+# USUARIO por el usuario del servidor (ver docs/DEPLOY.md); el repo no nombra la maquina.
+[Unit]
+Description=Portafolio (Docker Compose)
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=USUARIO
+Group=docker
+WorkingDirectory=/home/USUARIO/portafolio
+ExecStart=/usr/bin/docker compose up -d --wait --wait-timeout 60
+ExecStop=/usr/bin/docker compose stop
+TimeoutStartSec=120
+
+[Install]
+WantedBy=multi-user.target

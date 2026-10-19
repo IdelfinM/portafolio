@@ -1,0 +1,117 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import CaseCard from '../components/CaseCard.astro';
+import StackBadge from '../components/StackBadge.astro';
+import StatusBadge from '../components/StatusBadge.astro';
+import { projectUrl, routes, slugOf, useT, type Lang } from '../i18n/ui';
+import { getCases } from '../lib/content';
+
+interface Props {
+  lang: Lang;
+  project: CollectionEntry<'projects'>;
+}
+const { lang, project } = Astro.props;
+const t = useT(lang);
+const other: Lang = lang === 'es' ? 'en' : 'es';
+const slug = slugOf(project.id);
+const d = project.data;
+const { Content } = await render(project);
+const cases = (await getCases(lang)).filter((c) => c.data.project === slug);
+---
+
+<Base lang={lang} title={d.title} description={d.summary} altUrl={projectUrl(other, slug)}>
+  <article class="container-page py-14">
+    <a href={routes.projects[lang]} class="mb-6 inline-block text-sm text-accent-700 hover:underline dark:text-accent-300">
+      ← {t('project.back')}
+    </a>
+    <header class="mb-10">
+      <div class="mb-3 flex flex-wrap items-center gap-3">
+        <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">{d.title}</h1>
+        <StatusBadge lang={lang} status={d.status} />
+      </div>
+      <p class="max-w-3xl text-lg text-slate-600 dark:text-slate-300">{d.summary}</p>
+      {
+        (d.role || d.period) && (
+          <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">
+            {[d.role, d.period].filter(Boolean).join(' · ')}
+          </p>
+        )
+      }
+      {d.confidential && <p class="mt-4 rounded-lg bg-slate-100 px-4 py-3 text-sm dark:bg-slate-900">{t('project.confidential')}</p>}
+    </header>
+
+    {
+      d.image && (
+        <img
+          src={d.image}
+          alt={d.imageAlt ?? ''}
+          class="mb-10 w-full rounded-xl border border-slate-200 dark:border-slate-800"
+          loading="eager"
+        />
+      )
+    }
+
+    <div class="grid gap-10 lg:grid-cols-[1fr_16rem]">
+      <div>
+        <h2 class="mb-3 text-xl font-semibold tracking-tight">{t('project.highlights')}</h2>
+        <ul class="mb-8 list-disc space-y-1.5 pl-5 marker:text-accent-500">
+          {d.highlights.map((h) => <li>{h}</li>)}
+        </ul>
+        <div class="prose max-w-none prose-slate dark:prose-invert prose-a:text-accent-700 dark:prose-a:text-accent-300">
+          <Content />
+        </div>
+      </div>
+
+      <aside class="space-y-8">
+        {
+          d.metrics.length > 0 && (
+            <section>
+              <h2 class="mb-3 text-sm font-semibold tracking-wide text-slate-500 uppercase">{t('project.metrics')}</h2>
+              <dl class="space-y-3">
+                {d.metrics.map((m) => (
+                  <div>
+                    <dt class="text-sm text-slate-500 dark:text-slate-400">{m.label}</dt>
+                    <dd class="text-2xl font-semibold text-accent-700 dark:text-accent-300">{m.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          )
+        }
+        <section>
+          <h2 class="mb-3 text-sm font-semibold tracking-wide text-slate-500 uppercase">{t('project.stack')}</h2>
+          <div class="flex flex-wrap gap-1.5">{d.stack.map((s) => <StackBadge label={s} />)}</div>
+        </section>
+        {
+          (d.links.length > 0 || d.demoOnRequest) && (
+            <section>
+              <h2 class="mb-3 text-sm font-semibold tracking-wide text-slate-500 uppercase">{t('project.links')}</h2>
+              <ul class="space-y-1.5 text-sm">
+                {d.links.map((l) => (
+                  <li>
+                    <a href={l.href} class="text-accent-700 hover:underline dark:text-accent-300">{l.label} ↗</a>
+                  </li>
+                ))}
+                {d.demoOnRequest && <li class="text-slate-600 dark:text-slate-400">{t('project.demo')}</li>}
+              </ul>
+            </section>
+          )
+        }
+      </aside>
+    </div>
+
+    {
+      cases.length > 0 && (
+        <section class="mt-14">
+          <h2 class="mb-5 text-2xl font-semibold tracking-tight">{t('project.cases')}</h2>
+          <div class="grid gap-4 md:grid-cols-2">
+            {cases.map((c) => (
+              <CaseCard lang={lang} entry={c} />
+            ))}
+          </div>
+        </section>
+      )
+    }
+  </article>
+</Base>

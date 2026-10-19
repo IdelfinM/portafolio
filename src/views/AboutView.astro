@@ -1,0 +1,22 @@
+---
+import Base from '../layouts/Base.astro';
+import Contact from '../components/Contact.astro';
+import { routes, useT, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useT(lang);
+const other: Lang = lang === 'es' ? 'en' : 'es';
+---
+
+<Base lang={lang} title={t('about.title')} altUrl={routes.about[other]}>
+  <section class="container-page max-w-3xl py-14">
+    <h1 class="mb-8 text-3xl font-bold tracking-tight">{t('about.title')}</h1>
+    <div class="prose max-w-none prose-slate dark:prose-invert prose-a:text-accent-700 dark:prose-a:text-accent-300">
+      <slot />
+    </div>
+  </section>
+  <Contact lang={lang} />
+</Base>
