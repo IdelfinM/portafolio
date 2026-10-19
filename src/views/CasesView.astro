@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import CaseCard from '../components/CaseCard.astro';
-import { routes, useT, type Lang } from '../i18n/ui';
+import { routes, useT, withBase, type Lang } from '../i18n/ui';
 import { getCases, getProjects, projectTitles, tagsByFrequency } from '../lib/content';
 
 interface Props {
@@ -37,7 +37,7 @@ const tags = tagsByFrequency(cases);
     </div>
   </section>
   {/* Fichero propio y no <script> procesado: la CSP del sitio es script-src 'self' sin inline. */}
-  <script is:inline src="/js/filtro-casos.js" defer></script>
+  <script is:inline src={withBase('/js/filtro-casos.js')} defer></script>
 </Base>
 
 <style>

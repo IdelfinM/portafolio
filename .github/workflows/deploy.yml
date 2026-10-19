@@ -1,4 +1,4 @@
-# Publica el sitio en GitHub Pages (idmdev.net) en cada push a main.
+# Publica el sitio en GitHub Pages (https://idelfinm.github.io/portafolio/) en cada push a main.
 # La verificacion corre dentro del build: si dist/ trae pendientes, dominios de ejemplo o IPs
 # privadas, el job falla y no se publica nada. Los patrones privados de .verificar.local no estan
 # aqui (no se versionan); esos los revisa scripts/publicar.sh antes del push.
@@ -28,6 +28,8 @@ jobs:
         with:
           node-version: 24
           build-cmd: npm run build && node scripts/verificar-dist.mjs
+        env:
+          BASE_PATH: /portafolio
 
   deploy:
     needs: build

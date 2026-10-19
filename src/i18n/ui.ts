@@ -1,13 +1,21 @@
 export const langs = ['es', 'en'] as const;
 export type Lang = (typeof langs)[number];
 
+// GitHub Pages sirve el sitio bajo /portafolio/ y el contenedor del servidor en la raiz: toda ruta
+// interna pasa por aqui para llevar el prefijo que corresponda (base de astro.config.mjs).
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+export function withBase(path: string) {
+  return `${BASE}${path}`;
+}
+
 // Las URL se traducen tambien: /es/proyectos/ y /en/projects/ son la misma pagina.
 export const routes = {
-  home: { es: '/es/', en: '/en/' },
-  projects: { es: '/es/proyectos/', en: '/en/projects/' },
-  cases: { es: '/es/casos/', en: '/en/cases/' },
-  about: { es: '/es/sobre-mi/', en: '/en/about/' },
-} as const;
+  home: { es: withBase('/es/'), en: withBase('/en/') },
+  projects: { es: withBase('/es/proyectos/'), en: withBase('/en/projects/') },
+  cases: { es: withBase('/es/casos/'), en: withBase('/en/cases/') },
+  about: { es: withBase('/es/sobre-mi/'), en: withBase('/en/about/') },
+};
 
 export type RouteKey = keyof typeof routes;
 

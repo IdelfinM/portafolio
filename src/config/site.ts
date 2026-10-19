@@ -12,9 +12,9 @@ export const site = {
   cv: { es: '/cv/cv-es.pdf', en: '/cv/cv-en.pdf' },
   // Repositorio del propio sitio: se enlaza en el pie para quien quiera ver como esta hecho.
   repo: 'https://github.com/IdelfinM/portafolio',
-  // Dominio publico, servido por GitHub Pages (public/CNAME debe decir lo mismo). astro.config.mjs
-  // toma `url` de aqui.
-  url: 'https://idmdev.net',
+  // Origen publico, servido por GitHub Pages bajo /portafolio/ (la ruta la pone BASE_PATH en el
+  // workflow). astro.config.mjs toma `url` de aqui.
+  url: 'https://idelfinm.github.io',
   // Copia en el servidor casero en Docker, enlazada en el pie como evidencia de DevOps. Vacio = no
   // se enlaza (mientras su vhost y su certificado no esten publicados).
   selfHostedUrl: '',

@@ -7,7 +7,7 @@ import Contact from '../components/Contact.astro';
 import StackBadge from '../components/StackBadge.astro';
 import { site } from '../config/site';
 import { stackGroups } from '../config/stack';
-import { routes, useT, type Lang } from '../i18n/ui';
+import { routes, useT, withBase, type Lang } from '../i18n/ui';
 import { getCases, getProjects, projectTitles } from '../lib/content';
 
 interface Props {
@@ -36,7 +36,7 @@ const hasCv = existsSync(`public${site.cv[lang]}`);
       </a>
       {
         hasCv && (
-          <a href={site.cv[lang]} download class="rounded-lg border border-slate-300 px-4 py-2 font-medium hover:border-accent-500 dark:border-slate-700">
+          <a href={withBase(site.cv[lang])} download class="rounded-lg border border-slate-300 px-4 py-2 font-medium hover:border-accent-500 dark:border-slate-700">
             {t('hero.cta.cv')}
           </a>
         )

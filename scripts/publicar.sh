@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Publica el portafolio en los dos destinos con el mismo codigo:
-#   1. GitHub Pages (idmdev.net): basta con el push a main; lo publica .github/workflows/deploy.yml.
+#   1. GitHub Pages (idelfinm.github.io/portafolio): basta con el push a main; lo publica .github/workflows/deploy.yml.
 #   2. el contenedor del servidor casero (tar por ssh + docker compose build).
 #
 # Uso (Git Bash, desde la raiz del repo):

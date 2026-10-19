@@ -2,7 +2,7 @@
 
 Sitio portafolio de un ingeniero de software full-stack, pensado para entregarlo a reclutadores.
 Astro 7 (estatico) + Tailwind 4, bilingue ES/EN, sin backend. Se publica en GitHub Pages
-(`idmdev.net`, 24/7, porque el servidor casero se apaga de noche) y en un contenedor Docker en ese
+(`https://idelfinm.github.io/portafolio/`, 24/7, porque el servidor casero se apaga de noche) y en un contenedor Docker en ese
 servidor. Detalle operativo en `docs/DEPLOY.md`. **El repo es publico**: nada privado en el codigo.
 
 ## Reglas de contenido (no negociables)
@@ -27,7 +27,10 @@ servidor. Detalle operativo en `docs/DEPLOY.md`. **El repo es publico**: nada pr
   Solucion / Resultado` (en ingles Context / Problem / Diagnosis / Solution / Result).
 - `src/pages/{es,en}/...`: envoltorios delgados; la logica esta en `src/views/`. Las URL se traducen
   (`/es/proyectos/` = `/en/projects/`), mapa en `src/i18n/ui.ts`.
-- Datos personales y dominio: `src/config/site.ts` (de ahi lee `astro.config.mjs`).
+- Datos personales y origen publico: `src/config/site.ts` (de ahi lee `astro.config.mjs`).
+- **Rutas internas siempre con `withBase()` o `routes`** (`src/i18n/ui.ts`): en GitHub Pages el sitio
+  vive bajo `/portafolio/` (BASE_PATH en el workflow) y en el contenedor en la raiz. Un `href="/..."`
+  escrito a mano funciona en local y se rompe en Pages.
 - Ojo con YAML: un `: ` dentro de un elemento de lista sin comillas lo convierte en objeto.
 
 ## CSP estricta
