@@ -11,6 +11,15 @@ export async function getCases(lang: Lang) {
   return all.sort((a, b) => a.data.order - b.data.order);
 }
 
+// Suma de las metricas de pruebas de los proyectos ("282", "600+"...): el "+" y los separadores se
+// descartan, asi que el total nunca supera lo que dice cada proyecto.
+export function totalTests(projects: CollectionEntry<'projects'>[]) {
+  return projects
+    .flatMap((p) => p.data.metrics)
+    .filter((m) => /prueba|test/i.test(m.label))
+    .reduce((sum, m) => sum + (Number.parseInt(m.value.replace(/[^\d]/g, ''), 10) || 0), 0);
+}
+
 // slug del proyecto -> titulo, para rotular cada caso sin buscar el proyecto en cada tarjeta.
 export function projectTitles(projects: CollectionEntry<'projects'>[]) {
   return new Map(projects.map((p) => [slugOf(p.id), p.data.title]));

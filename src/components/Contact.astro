@@ -1,6 +1,7 @@
 ---
 import { site } from '../config/site';
 import { useT, type Lang } from '../i18n/ui';
+import Icon, { type IconName } from './Icon.astro';
 
 interface Props {
   lang: Lang;
@@ -9,28 +10,32 @@ const { lang } = Astro.props;
 const t = useT(lang);
 
 // Sin formulario a proposito: un sitio estatico sin backend no tiene nada que atacar.
-const links = [
-  { label: site.email, href: `mailto:${site.email}` },
-  { label: 'LinkedIn', href: site.linkedin },
-  { label: 'GitHub', href: site.github },
+const links: { label: string; href: string; icon: IconName }[] = [
+  { label: site.email, href: `mailto:${site.email}`, icon: 'mail' },
+  { label: 'LinkedIn', href: site.linkedin, icon: 'linkedin' },
+  { label: 'GitHub', href: site.github, icon: 'github' },
 ];
 ---
 
-<section id="contacto" class="container-page scroll-mt-20 pb-20" aria-labelledby="contacto-titulo">
-  <div class="rounded-2xl bg-accent-900 px-6 py-10 text-white sm:px-10 dark:bg-accent-900/60">
-    <h2 id="contacto-titulo" class="mb-3 text-2xl font-semibold tracking-tight">{t('contact.title')}</h2>
-    <p class="mb-6 max-w-xl text-accent-100">{t('contact.text')}</p>
-    <ul class="flex flex-wrap gap-3">
+<section id="contacto" class="container-page scroll-mt-24 py-20" aria-labelledby="contacto-titulo">
+  <div class="relative overflow-hidden rounded-3xl bg-linear-to-br from-accent-400 via-accent-300 to-accent-400 px-6 py-12 text-slate-950 shadow-xl shadow-accent-400/20 sm:px-12">
+    <span class="absolute -top-16 -right-16 size-56 rounded-full bg-white/25 blur-2xl" aria-hidden="true"></span>
+    <h2 id="contacto-titulo" class="relative mb-3 text-3xl font-bold tracking-tight sm:text-4xl">{t('contact.title')}</h2>
+    <p class="relative mb-8 max-w-xl text-lg text-slate-800">{t('contact.text')}</p>
+    <ul class="relative flex flex-wrap gap-3">
       {
         links.map((l) => (
           <li>
-            <a href={l.href} class="inline-block rounded-lg bg-white/10 px-4 py-2 font-medium ring-1 ring-white/20 hover:bg-white/20">
+            <a
+              href={l.href}
+              class="inline-flex items-center gap-2 rounded-md bg-slate-950 px-5 py-2.5 font-semibold text-white transition hover:-translate-y-0.5 hover:bg-slate-800"
+            >
+              <Icon name={l.icon} class="size-4" />
               {l.label}
             </a>
           </li>
         ))
       }
     </ul>
-    <p class="mt-6 text-sm text-accent-100/80">{site.location[lang]}</p>
   </div>
 </section>

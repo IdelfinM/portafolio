@@ -36,6 +36,19 @@ export function langOf(id: string): Lang {
   return id.split('/')[0] as Lang;
 }
 
+// "[...]" marca la parte del titulo que va resaltada (SectionTitle.astro). plain() la quita para
+// los usos sin formato: <title>, aria-label.
+export function splitHighlight(text: string) {
+  return text
+    .split(/(\[[^\]]+\])/)
+    .filter(Boolean)
+    .map((part) => (part.startsWith('[') ? { text: part.slice(1, -1), highlight: true } : { text: part, highlight: false }));
+}
+
+export function plain(text: string) {
+  return text.replace(/[[\]]/g, '');
+}
+
 export const ui = {
   es: {
     'meta.description':
@@ -51,20 +64,20 @@ export const ui = {
     'hero.cta.projects': 'Ver proyectos',
     'hero.cta.cv': 'Descargar CV',
     'hero.cta.contact': 'Escribirme',
-    'home.featured': 'Proyectos destacados',
+    'home.featured': 'Proyectos [destacados]',
     'home.featured.all': 'Todos los proyectos',
-    'home.cases': 'Cómo resuelvo problemas',
+    'home.cases': 'Cómo resuelvo [problemas]',
     'home.cases.intro':
       'Cada caso sigue el mismo orden: contexto, problema, diagnóstico, solución y resultado. Son problemas reales que aparecieron en producción o durante el desarrollo.',
     'home.cases.all': 'Todos los casos',
-    'home.stack': 'Con qué trabajo',
-    'projects.title': 'Proyectos',
+    'home.stack': 'Con qué [trabajo]',
+    'projects.title': 'Mis [proyectos]',
     'projects.intro':
       'Aplicaciones que he diseñado, construido y, en varios casos, desplegado y operado yo mismo.',
     'project.stack': 'Tecnologías',
-    'project.highlights': 'Qué hace',
+    'project.highlights': 'Qué [hace]',
     'project.metrics': 'En números',
-    'project.cases': 'Problemas resueltos en este proyecto',
+    'project.cases': 'Problemas [resueltos] en este proyecto',
     'project.links': 'Enlaces',
     'project.back': 'Volver a proyectos',
     'project.confidential': 'Proyecto privado de empresa: solo se describen el alcance y mi rol.',
@@ -72,20 +85,26 @@ export const ui = {
     'status.production': 'En producción',
     'status.development': 'En desarrollo',
     'status.private': 'Privado',
-    'cases.title': 'Problemas resueltos',
+    'cases.title': 'Problemas [resueltos]',
     'cases.intro':
       'Problemas concretos, cómo los diagnostiqué y qué cambió después. Filtra por tecnología o abre cualquiera para ver el detalle.',
     'cases.filter.all': 'Todos',
     'case.project': 'Proyecto',
     'case.result': 'Resultado',
     'case.back': 'Volver a los casos',
-    'about.title': 'Sobre mí',
+    'about.title': 'Sobre [mí]',
     'contact.title': 'Hablemos',
     'contact.text':
       'Si tienes una vacante o un proyecto donde encaje este perfil, escríbeme. Respondo en español o en inglés.',
     'footer.selfhosted': 'Este sitio también corre en Docker en mi propio servidor',
     'footer.built': 'Hecho con Astro y Tailwind CSS',
     'footer.source': 'Código de este sitio',
+    'theme.light': 'Claro',
+    'theme.dark': 'Oscuro',
+    'theme.toggle': 'Cambiar tema claro/oscuro',
+    'hero.stats.tests': 'pruebas automatizadas',
+    'hero.stats.projects': 'proyectos',
+    'hero.stats.cases': 'problemas documentados',
     'common.readMore': 'Leer caso',
     'common.viewProject': 'Ver proyecto',
   },
@@ -103,20 +122,20 @@ export const ui = {
     'hero.cta.projects': 'See projects',
     'hero.cta.cv': 'Download resume',
     'hero.cta.contact': 'Get in touch',
-    'home.featured': 'Featured projects',
+    'home.featured': 'Featured [projects]',
     'home.featured.all': 'All projects',
-    'home.cases': 'How I solve problems',
+    'home.cases': 'How I solve [problems]',
     'home.cases.intro':
       'Every case follows the same order: context, problem, diagnosis, solution and result. These are real problems that showed up in production or during development.',
     'home.cases.all': 'All cases',
-    'home.stack': 'What I work with',
-    'projects.title': 'Projects',
+    'home.stack': 'What I [work with]',
+    'projects.title': 'My [projects]',
     'projects.intro':
       'Applications I designed and built and, in several cases, deployed and operate myself.',
     'project.stack': 'Technologies',
-    'project.highlights': 'What it does',
+    'project.highlights': 'What it [does]',
     'project.metrics': 'By the numbers',
-    'project.cases': 'Problems solved in this project',
+    'project.cases': 'Problems [solved] in this project',
     'project.links': 'Links',
     'project.back': 'Back to projects',
     'project.confidential': 'Private company project: only the scope and my role are described.',
@@ -124,20 +143,26 @@ export const ui = {
     'status.production': 'In production',
     'status.development': 'In development',
     'status.private': 'Private',
-    'cases.title': 'Problems solved',
+    'cases.title': 'Problems [solved]',
     'cases.intro':
       'Concrete problems, how I diagnosed them and what changed afterwards. Filter by technology or open any of them for the details.',
     'cases.filter.all': 'All',
     'case.project': 'Project',
     'case.result': 'Result',
     'case.back': 'Back to cases',
-    'about.title': 'About me',
+    'about.title': 'About [me]',
     'contact.title': "Let's talk",
     'contact.text':
       "If you have a role or a project where this profile fits, write to me. I answer in Spanish or English.",
     'footer.selfhosted': 'This site also runs in Docker on my own server',
     'footer.built': 'Built with Astro and Tailwind CSS',
     'footer.source': 'Source code',
+    'theme.light': 'Light',
+    'theme.dark': 'Dark',
+    'theme.toggle': 'Switch light/dark theme',
+    'hero.stats.tests': 'automated tests',
+    'hero.stats.projects': 'projects',
+    'hero.stats.cases': 'documented problems',
     'common.readMore': 'Read case',
     'common.viewProject': 'View project',
   },

@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import SectionTitle from '../components/SectionTitle.astro';
 import { routes, useT, type Lang } from '../i18n/ui';
 import { getProjects } from '../lib/content';
 
@@ -14,10 +15,10 @@ const projects = await getProjects(lang);
 ---
 
 <Base lang={lang} title={t('projects.title')} altUrl={routes.projects[other]}>
-  <section class="container-page py-14">
-    <h1 class="mb-3 text-3xl font-bold tracking-tight">{t('projects.title')}</h1>
-    <p class="mb-10 max-w-2xl text-slate-600 dark:text-slate-400">{t('projects.intro')}</p>
-    <div class="grid gap-4 md:grid-cols-2">
+  <section class="container-page py-16">
+    <SectionTitle as="h1" text={t('projects.title')} />
+    <p class="-mt-2 mb-12 max-w-2xl text-lg text-slate-600 dark:text-slate-400">{t('projects.intro')}</p>
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {projects.map((p) => <ProjectCard lang={lang} project={p} />)}
     </div>
   </section>

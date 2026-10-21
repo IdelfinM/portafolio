@@ -4,11 +4,12 @@ import Base from '../layouts/Base.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import CaseCard from '../components/CaseCard.astro';
 import Contact from '../components/Contact.astro';
-import StackBadge from '../components/StackBadge.astro';
+import Icon from '../components/Icon.astro';
+import SectionTitle from '../components/SectionTitle.astro';
 import { site } from '../config/site';
 import { stackGroups } from '../config/stack';
-import { routes, useT, withBase, type Lang } from '../i18n/ui';
-import { getCases, getProjects, projectTitles } from '../lib/content';
+import { routes, splitHighlight, useT, withBase, type Lang } from '../i18n/ui';
+import { getCases, getProjects, projectTitles, totalTests } from '../lib/content';
 
 interface Props {
   lang: Lang;
@@ -19,73 +20,120 @@ const other: Lang = lang === 'es' ? 'en' : 'es';
 
 const projects = await getProjects(lang);
 const featured = projects.filter((p) => p.data.featured);
-const cases = (await getCases(lang)).filter((c) => c.data.featured).slice(0, 4);
+const allCases = await getCases(lang);
+const cases = allCases.filter((c) => c.data.featured).slice(0, 4);
 const titles = projectTitles(projects);
 // El boton del CV solo aparece cuando el PDF existe de verdad en public/.
 const hasCv = existsSync(`public${site.cv[lang]}`);
+
+// Cifras de la portada sacadas del contenido, no escritas a mano: si cambia un proyecto, cambian
+// solas. Las pruebas se redondean hacia abajo a la centena para no prometer de mas.
+const tests = totalTests(projects);
+const nf = new Intl.NumberFormat(lang === 'es' ? 'es-DO' : 'en-US');
+const stats = [
+  { icon: 'flask', value: `${nf.format(Math.floor(tests / 100) * 100)}+`, label: t('hero.stats.tests') },
+  { icon: 'folder', value: String(projects.length), label: t('hero.stats.projects') },
+  { icon: 'bulb', value: String(allCases.length), label: t('hero.stats.cases') },
+] as const;
+const role = splitHighlight(lang === 'es' ? 'Ingeniero de Software [Full-Stack]' : '[Full-Stack] Software Engineer');
 ---
 
 <Base lang={lang} altUrl={routes.home[other]}>
-  <section class="container-page py-16 sm:py-24">
-    <p class="mb-3 text-sm font-medium tracking-wide text-accent-700 uppercase dark:text-accent-300">{t('hero.role')}</p>
-    <h1 class="mb-5 text-4xl font-bold tracking-tight sm:text-5xl">{site.name}</h1>
-    <p class="mb-8 max-w-2xl text-lg text-slate-600 dark:text-slate-300">{t('hero.pitch')}</p>
-    <div class="flex flex-wrap gap-3">
-      <a href={routes.projects[lang]} class="rounded-lg bg-accent-600 px-4 py-2 font-medium text-white hover:bg-accent-700">
+  <section class="container-page pt-20 pb-16 text-center sm:pt-28">
+    <p class="mb-5 inline-flex items-center gap-2 rounded-full border border-accent-200 bg-accent-50 px-4 py-1.5 text-sm font-medium text-accent-700 dark:border-accent-400/30 dark:bg-accent-400/10 dark:text-accent-300">
+      <span class="size-2 rounded-full bg-accent-400"></span>
+      {site.location[lang]}
+    </p>
+    <h1 class="mx-auto mb-4 max-w-4xl text-5xl leading-tight font-bold tracking-tight sm:text-7xl">{site.name}</h1>
+    <p class="mb-6 font-display text-2xl font-semibold sm:text-3xl">
+      {role.map((p) => (p.highlight ? <span class="text-gradient">{p.text}</span> : p.text))}
+    </p>
+    <p class="mx-auto mb-10 max-w-2xl text-lg text-slate-600 dark:text-slate-300">{t('hero.pitch')}</p>
+    <div class="flex flex-wrap justify-center gap-3">
+      <a href={routes.projects[lang]} class="btn-primary">
         {t('hero.cta.projects')}
+        <Icon name="arrowRight" class="size-4" />
       </a>
       {
         hasCv && (
-          <a href={withBase(site.cv[lang])} download class="rounded-lg border border-slate-300 px-4 py-2 font-medium hover:border-accent-500 dark:border-slate-700">
+          <a href={withBase(site.cv[lang])} download class="btn-secondary">
+            <Icon name="download" class="size-4" />
             {t('hero.cta.cv')}
           </a>
         )
       }
-      <a href="#contacto" class="rounded-lg px-4 py-2 font-medium text-accent-700 hover:underline dark:text-accent-300">
+      <a href="#contacto" class="btn-secondary">
+        <Icon name="mail" class="size-4" />
         {t('hero.cta.contact')}
       </a>
     </div>
+
+    <dl class="mx-auto mt-16 grid max-w-3xl grid-cols-3 gap-6">
+      {
+        stats.map((s) => (
+          <div class="flex flex-col items-center">
+            <dd class="order-2 font-display text-3xl font-bold sm:text-4xl"><span class="text-gradient">{s.value}</span></dd>
+            <dt class="order-3 mt-1 text-sm text-slate-600 dark:text-slate-400">{s.label}</dt>
+            <Icon name={s.icon} class="order-1 mb-2 size-6 text-accent-500" />
+          </div>
+        ))
+      }
+    </dl>
   </section>
 
-  <section class="container-page pb-16" aria-labelledby="destacados">
-    <div class="mb-6 flex items-baseline justify-between gap-4">
-      <h2 id="destacados" class="text-2xl font-semibold tracking-tight">{t('home.featured')}</h2>
-      <a href={routes.projects[lang]} class="text-sm text-accent-700 hover:underline dark:text-accent-300">{t('home.featured.all')} →</a>
+  <section class="container-page py-16" aria-labelledby="destacados">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <SectionTitle id="destacados" text={t('home.featured')} />
+      <a href={routes.projects[lang]} class="mb-8 inline-flex items-center gap-1 link-accent">
+        {t('home.featured.all')}
+        <Icon name="arrowRight" class="size-4" />
+      </a>
     </div>
-    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {featured.map((p) => <ProjectCard lang={lang} project={p} />)}
     </div>
   </section>
 
-  <section class="border-y border-slate-200 bg-slate-50 py-16 dark:border-slate-800 dark:bg-slate-900/40" aria-labelledby="casos">
+  <section class="bg-slate-50 py-20 dark:bg-slate-900/40" aria-labelledby="casos">
     <div class="container-page">
-      <div class="mb-2 flex items-baseline justify-between gap-4">
-        <h2 id="casos" class="text-2xl font-semibold tracking-tight">{t('home.cases')}</h2>
-        <a href={routes.cases[lang]} class="text-sm text-accent-700 hover:underline dark:text-accent-300">{t('home.cases.all')} →</a>
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <SectionTitle id="casos" text={t('home.cases')} />
+        <a href={routes.cases[lang]} class="mb-8 inline-flex items-center gap-1 link-accent">
+          {t('home.cases.all')}
+          <Icon name="arrowRight" class="size-4" />
+        </a>
       </div>
-      <p class="mb-6 max-w-2xl text-slate-600 dark:text-slate-400">{t('home.cases.intro')}</p>
-      <div class="grid gap-4 md:grid-cols-2">
+      <p class="-mt-2 mb-10 max-w-2xl text-lg text-slate-600 dark:text-slate-400">{t('home.cases.intro')}</p>
+      <div class="grid gap-6 md:grid-cols-2">
         {cases.map((c) => <CaseCard lang={lang} entry={c} projectTitle={titles.get(c.data.project)} />)}
       </div>
     </div>
   </section>
 
-  <section class="container-page py-16" aria-labelledby="stack">
-    <h2 id="stack" class="mb-6 text-2xl font-semibold tracking-tight">{t('home.stack')}</h2>
-    <dl class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+  <section class="container-page py-20" aria-labelledby="stack">
+    <SectionTitle id="stack" text={t('home.stack')} />
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {
         stackGroups.map((g) => (
-          <div>
-            <dt class="mb-2 text-sm font-semibold">{g.label[lang]}</dt>
-            <dd class="flex flex-wrap gap-1.5">
+          <article class="card card-hover p-6">
+            <div class="mb-4 flex items-center gap-3">
+              <span class="icon-chip">
+                <Icon name={g.icon} class="size-6" />
+              </span>
+              <h3 class="text-lg font-semibold">{g.label[lang]}</h3>
+            </div>
+            <ul class="space-y-1.5 text-sm text-slate-600 dark:text-slate-300">
               {g.items.map((item) => (
-                <StackBadge label={typeof item === 'string' ? item : item[lang]} />
+                <li class="flex items-center gap-2">
+                  <span class="size-1.5 shrink-0 rounded-full bg-accent-400" aria-hidden="true" />
+                  {typeof item === 'string' ? item : item[lang]}
+                </li>
               ))}
-            </dd>
-          </div>
+            </ul>
+          </article>
         ))
       }
-    </dl>
+    </div>
   </section>
 
   <Contact lang={lang} />

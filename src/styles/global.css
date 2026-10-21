@@ -1,23 +1,43 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-/* Fuentes del sistema: cero peticiones externas, y la CSP puede quedarse en 'self'. */
+/* Fuentes empaquetadas con el sitio (npm @fontsource): se sirven desde el mismo origen, asi la CSP
+   sigue en font-src 'self' y no hay peticiones a terceros. Inter para texto, Poppins para titulos. */
+@import "@fontsource-variable/inter/wght.css";
+/* Poppins solo en latin (cubre tildes y la enie): las demas escrituras no se usan y no viajan. */
+@import "@fontsource/poppins/latin-600.css";
+@import "@fontsource/poppins/latin-700.css";
+
+/* Modo oscuro por clase: lo decide public/js/tema.js (preferencia guardada o la del sistema). */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-display: "Poppins", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   --font-mono: ui-monospace, "Cascadia Code", "SFMono-Regular", Menlo, Consolas, monospace;
-  --color-accent-50: oklch(0.97 0.02 185);
-  --color-accent-100: oklch(0.93 0.05 185);
-  --color-accent-300: oklch(0.82 0.11 185);
-  --color-accent-400: oklch(0.75 0.13 185);
-  --color-accent-500: oklch(0.66 0.13 185);
-  --color-accent-600: oklch(0.56 0.11 185);
-  --color-accent-700: oklch(0.47 0.09 185);
-  --color-accent-900: oklch(0.3 0.05 185);
+
+  /* Amarillo de marca. 400 es el de relleno (botones, cifras en oscuro); 700 es el unico apto para
+     texto sobre blanco (contraste ~5:1); 300 para texto sobre fondo oscuro. */
+  --color-accent-50: #fffbeb;
+  --color-accent-100: #fff6c7;
+  --color-accent-200: #ffec8a;
+  --color-accent-300: #ffe066;
+  --color-accent-400: #ffc709;
+  --color-accent-500: #f2b200;
+  --color-accent-600: #d99a00;
+  --color-accent-700: #8f6200;
+  --color-accent-900: #4a3500;
 }
 
 @layer base {
   html {
-    @apply scroll-smooth bg-white text-slate-800 antialiased dark:bg-slate-950 dark:text-slate-200;
+    @apply scroll-smooth bg-white font-sans text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display;
   }
 
   :focus-visible {
@@ -26,5 +46,83 @@
 }
 
 @utility container-page {
-  @apply mx-auto w-full max-w-5xl px-5 sm:px-8;
+  @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
+}
+
+/* Palabra resaltada de los titulos (ver SectionTitle.astro). En claro el degradado es mas oscuro
+   para que el texto grande siga siendo legible sobre blanco. */
+@utility text-gradient {
+  background-image: linear-gradient(45deg, var(--color-accent-600), var(--color-accent-400), var(--color-accent-600));
+  @apply bg-clip-text text-transparent;
+
+  &:where(.dark, .dark *) {
+    background-image: linear-gradient(45deg, var(--color-accent-400), #fff07f, var(--color-accent-400));
+  }
+}
+
+@utility btn-primary {
+  @apply inline-flex items-center gap-2 rounded-md bg-accent-400 px-7 py-2.5 font-semibold text-slate-950 shadow-sm transition hover:-translate-y-0.5 hover:bg-accent-500 hover:shadow-md;
+}
+
+@utility btn-secondary {
+  @apply inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-7 py-2.5 font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:border-accent-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100;
+}
+
+@utility card {
+  @apply rounded-2xl border border-slate-100 bg-white shadow-lg shadow-slate-900/5 transition duration-300 dark:border-slate-800 dark:bg-slate-900 dark:shadow-none;
+}
+
+@utility card-hover {
+  @apply hover:-translate-y-1 hover:border-accent-200 hover:shadow-xl dark:hover:border-accent-400/40;
+}
+
+/* Recuadro amarillo con un icono dentro, como encabezado de tarjeta o de cifra. */
+@utility icon-chip {
+  @apply grid size-12 shrink-0 place-items-center rounded-xl bg-linear-to-br from-accent-100 to-accent-200 text-accent-700 dark:from-accent-400/20 dark:to-accent-400/10 dark:text-accent-300;
+}
+
+@utility link-accent {
+  @apply font-medium text-accent-700 underline-offset-4 hover:underline dark:text-accent-300;
+}
+
+/* Resplandores amarillos difusos en las esquinas y puntos sueltos: solo decoracion, detras de todo.
+   Van en un elemento del layout (Base.astro) con aria-hidden. */
+.fondo-deco {
+  @apply pointer-events-none fixed inset-0 -z-10 overflow-hidden;
+
+  &::before,
+  &::after {
+    content: "";
+    @apply absolute size-[38rem] rounded-full blur-3xl;
+  }
+  &::before {
+    @apply -top-64 -right-48 bg-accent-300/25 dark:bg-accent-400/10;
+  }
+  &::after {
+    @apply -bottom-72 -left-56 bg-accent-200/40 dark:bg-accent-400/8;
+  }
+
+  & .punto {
+    @apply absolute size-2.5 rounded-full bg-accent-400/70 dark:bg-accent-400/40;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .fondo-deco .punto {
+    animation: flotar 9s ease-in-out infinite;
+  }
+  .fondo-deco .punto:nth-child(2n) {
+    animation-duration: 12s;
+    animation-delay: -3s;
+  }
+}
+
+@keyframes flotar {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
 }

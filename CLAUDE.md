@@ -33,6 +33,19 @@ servidor. Detalle operativo en `docs/DEPLOY.md`. **El repo es publico**: nada pr
   escrito a mano funciona en local y se rompe en Pages.
 - Ojo con YAML: un `: ` dentro de un elemento de lista sin comillas lo convierte en objeto.
 
+## Estilo visual
+
+- Claro por defecto con resplandores amarillos (`.fondo-deco` en `Base.astro`), modo oscuro por clase
+  `.dark` que pone `public/js/tema.js` (cargado en `<head>` sin defer para no parpadear).
+- Amarillo de marca `accent-400` (#ffc709) para rellenos: botones (`btn-primary`, texto negro), chips de
+  icono (`icon-chip`), barras. **Texto amarillo sobre blanco solo con `accent-700`** (contraste);
+  `text-gradient` solo en texto grande.
+- Titulos en Poppins (`font-display`), texto en Inter; ambas empaquetadas con @fontsource (solo latin
+  en Poppins). Tarjetas con `card card-hover`.
+- Titulos de seccion con `SectionTitle.astro`: la parte entre `[corchetes]` de la traduccion va resaltada;
+  `plain()` los quita para `<title>` y `aria-label`.
+- Iconos: `Icon.astro` (SVG en linea); para uno nuevo, anadir su trazo ahi.
+
 ## CSP estricta
 
 La CSP (`<meta>` en `src/layouts/Base.astro` para GitHub Pages, cabecera en el nginx del host) lleva

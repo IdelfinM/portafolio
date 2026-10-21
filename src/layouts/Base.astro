@@ -1,7 +1,8 @@
 ---
 import '../styles/global.css';
+import Icon from '../components/Icon.astro';
 import { site } from '../config/site';
-import { routes, useT, withBase, type Lang } from '../i18n/ui';
+import { plain, routes, useT, withBase, type Lang } from '../i18n/ui';
 
 interface Props {
   lang: Lang;
@@ -14,7 +15,7 @@ interface Props {
 const { lang, title, description, altUrl } = Astro.props;
 const t = useT(lang);
 const other: Lang = lang === 'es' ? 'en' : 'es';
-const pageTitle = title ? `${title} · ${site.name}` : `${site.name} · ${t('hero.role')}`;
+const pageTitle = title ? `${plain(title)} · ${site.name}` : `${site.name} · ${t('hero.role')}`;
 const pageDescription = description ?? t('meta.description');
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const alternate = new URL(altUrl ?? routes.home[other], Astro.site);
@@ -53,42 +54,64 @@ const nav = [
     <meta property="og:description" content={pageDescription} />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content={lang === 'es' ? 'es_DO' : 'en_US'} />
+    {/* Sin defer: decide el tema antes de pintar (ver public/js/tema.js). */}
+    <script is:inline src={withBase('/js/tema.js')}></script>
   </head>
   <body class="flex min-h-screen flex-col">
+    <div class="fondo-deco" aria-hidden="true">
+      <span class="punto top-28 left-[6%]"></span>
+      <span class="punto top-[42%] right-[4%]"></span>
+      <span class="punto bottom-[18%] left-[3%]"></span>
+      <span class="punto right-[12%] bottom-[8%]"></span>
+    </div>
+
     <a
       href="#contenido"
-      class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:rounded focus:bg-accent-600 focus:px-3 focus:py-2 focus:text-white"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-accent-400 focus:px-3 focus:py-2 focus:text-slate-950"
     >
       {lang === 'es' ? 'Saltar al contenido' : 'Skip to content'}
     </a>
 
-    <header class="sticky top-0 z-10 border-b border-slate-200/80 bg-white/85 backdrop-blur dark:border-slate-800 dark:bg-slate-950/85">
+    <header class="sticky top-0 z-20 bg-white/95 shadow-[0_4px_20px_rgba(0,0,0,0.08)] backdrop-blur-md dark:bg-slate-950/90 dark:shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
       <div class="container-page flex items-center justify-between gap-4 py-3">
-        <a href={routes.home[lang]} class="flex items-center gap-2 font-semibold tracking-tight">
-          <span class="grid size-8 place-items-center rounded-md bg-accent-600 text-sm text-white">{site.initials}</span>
-          <span class="hidden sm:inline">{site.name}</span>
+        <a href={routes.home[lang]} class="flex items-center gap-2.5 font-display font-semibold tracking-tight">
+          <span class="grid size-9 place-items-center rounded-lg bg-accent-400 text-sm font-bold text-slate-950">{site.initials}</span>
+          <span class="hidden md:inline">{site.name}</span>
         </a>
         <nav aria-label={lang === 'es' ? 'Principal' : 'Main'}>
-          <ul class="flex flex-wrap items-center justify-end gap-x-4 gap-y-1 text-sm">
+          <ul class="flex flex-wrap items-center justify-end gap-x-5 gap-y-1 text-sm font-medium">
             {
               nav.map((item) => (
                 <li>
                   <a
                     href={item.href}
                     aria-current={current === item.href ? 'page' : undefined}
-                    class="text-slate-600 hover:text-accent-700 aria-[current=page]:font-semibold aria-[current=page]:text-accent-700 dark:text-slate-300 dark:hover:text-accent-300 dark:aria-[current=page]:text-accent-300"
+                    class="text-slate-700 transition hover:text-slate-950 aria-[current=page]:font-semibold aria-[current=page]:text-slate-950 aria-[current=page]:underline aria-[current=page]:decoration-accent-400 aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-8 dark:text-slate-300 dark:hover:text-white dark:aria-[current=page]:text-white"
                   >
                     {item.label}
                   </a>
                 </li>
               ))
             }
-            <li>
+            <li class="flex items-center gap-2">
+              {/* El boton nace oculto y tema.js lo muestra: sin JS no haria nada. */}
+              <button
+                type="button"
+                data-tema-boton
+                hidden
+                aria-pressed="false"
+                title={t('theme.toggle')}
+                class="inline-flex cursor-pointer items-center gap-1.5 rounded-md px-2 py-1 text-xs text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white"
+              >
+                <span class="flex items-center gap-1.5 dark:hidden"><Icon name="sun" class="size-4" />{t('theme.light')}</span>
+                <span class="hidden items-center gap-1.5 dark:flex"><Icon name="moon" class="size-4" />{t('theme.dark')}</span>
+                <span class="sr-only">{t('theme.toggle')}</span>
+              </button>
               <a
                 href={altUrl ?? routes.home[other]}
                 hreflang={other}
                 lang={other}
-                class="rounded border border-slate-300 px-2 py-0.5 text-xs font-medium uppercase hover:border-accent-500 dark:border-slate-700"
+                class="rounded-md border border-slate-300 px-2 py-0.5 text-xs font-semibold uppercase hover:border-accent-400 hover:bg-accent-50 dark:border-slate-700 dark:hover:bg-accent-400/10"
               >
                 <span aria-hidden="true">{other}</span>
                 <span class="sr-only">{t('nav.switch')}</span>
@@ -103,21 +126,24 @@ const nav = [
       <slot />
     </main>
 
-    <footer class="border-t border-slate-200 py-8 text-sm text-slate-500 dark:border-slate-800 dark:text-slate-400">
-      <div class="container-page flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <p>© {new Date().getFullYear()} {site.name}</p>
+    <footer class="border-t border-slate-200 bg-slate-50 py-8 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-400">
+      <div class="container-page flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p class="flex items-center gap-2">
+          <span class="grid size-6 place-items-center rounded-md bg-accent-400 text-[10px] font-bold text-slate-950">{site.initials}</span>
+          © {new Date().getFullYear()} {site.name}
+        </p>
         <p class="flex flex-wrap gap-x-3">
           {
             hasSelfHosted && (
               <>
-                <a href={site.selfHostedUrl} class="underline-offset-4 hover:text-accent-700 hover:underline dark:hover:text-accent-300">
+                <a href={site.selfHostedUrl} class="hover:text-slate-950 hover:underline dark:hover:text-white">
                   {t('footer.selfhosted')}
                 </a>
                 <span aria-hidden="true">·</span>
               </>
             )
           }
-          <a href={site.repo} class="underline-offset-4 hover:text-accent-700 hover:underline dark:hover:text-accent-300">
+          <a href={site.repo} class="hover:text-slate-950 hover:underline dark:hover:text-white">
             {t('footer.source')}
           </a>
           <span aria-hidden="true">·</span>

@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import { caseUrl, slugOf, useT, type Lang } from '../i18n/ui';
+import Icon from './Icon.astro';
 import StackBadge from './StackBadge.astro';
 
 interface Props {
@@ -13,20 +14,28 @@ const t = useT(lang);
 const { title, summary, result, tags } = entry.data;
 ---
 
-<article
-  class="relative flex flex-col rounded-xl border border-slate-200 p-5 transition hover:border-accent-400 dark:border-slate-800 dark:hover:border-accent-600"
-  data-tags={tags.join('|')}
->
-  {projectTitle && <p class="mb-1 text-xs font-medium tracking-wide text-accent-700 uppercase dark:text-accent-300">{projectTitle}</p>}
-  <h3 class="mb-2 font-semibold tracking-tight">
+<article class="group card card-hover relative flex flex-col p-6" data-tags={tags.join('|')}>
+  {projectTitle && <p class="mb-2 text-xs font-semibold tracking-wider text-accent-700 uppercase dark:text-accent-300">{projectTitle}</p>}
+  <h3 class="mb-3 text-lg leading-snug font-semibold tracking-tight">
     <a href={caseUrl(lang, slugOf(entry.id))} class="after:absolute after:inset-0">{title}</a>
   </h3>
-  <p class="mb-3 text-sm text-slate-600 dark:text-slate-400">{summary}</p>
-  <p class="mb-4 border-l-2 border-accent-500 pl-3 text-sm">
-    <span class="font-medium">{t('case.result')}:</span>{' '}
-    {result}
-  </p>
-  <div class="mt-auto flex flex-wrap gap-1.5">
-    {tags.map((tag) => <StackBadge label={tag} />)}
+  <p class="mb-4 text-sm leading-relaxed text-slate-600 dark:text-slate-400">{summary}</p>
+  <div class="mb-5 flex gap-3 rounded-xl bg-accent-50 p-4 text-sm dark:bg-accent-400/10">
+    <span class="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-accent-400 text-slate-950">
+      <Icon name="check" class="size-3" />
+    </span>
+    <p>
+      <span class="font-semibold">{t('case.result')}:</span>{' '}
+      {result}
+    </p>
+  </div>
+  <div class="mt-auto flex flex-wrap items-center justify-between gap-3">
+    <div class="flex flex-wrap gap-1.5">
+      {tags.map((tag) => <StackBadge label={tag} />)}
+    </div>
+    <span class="inline-flex items-center gap-1 text-sm font-semibold text-accent-700 dark:text-accent-300" aria-hidden="true">
+      {t('common.readMore')}
+      <Icon name="arrowRight" class="size-4 transition group-hover:translate-x-1" />
+    </span>
   </div>
 </article>

@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import { projectUrl, slugOf, useT, type Lang } from '../i18n/ui';
+import Icon from './Icon.astro';
 import StackBadge from './StackBadge.astro';
 import StatusBadge from './StatusBadge.astro';
 
@@ -14,31 +15,34 @@ const { title, tagline, status, stack, metrics } = project.data;
 const href = projectUrl(lang, slugOf(project.id));
 ---
 
-<article class="group relative flex flex-col rounded-xl border border-slate-200 p-5 transition hover:border-accent-400 hover:shadow-sm dark:border-slate-800 dark:hover:border-accent-600">
-  <div class="mb-2 flex items-center justify-between gap-2">
-    <h3 class="text-lg font-semibold tracking-tight">
-      <a href={href} class="after:absolute after:inset-0">{title}</a>
-    </h3>
+<article class="group card card-hover relative flex flex-col p-6">
+  <div class="mb-4 flex items-start justify-between gap-3">
+    <span class="icon-chip">
+      <Icon name="code" class="size-6" />
+    </span>
     <StatusBadge lang={lang} status={status} />
   </div>
-  <p class="mb-4 text-sm text-slate-600 dark:text-slate-400">{tagline}</p>
+  <h3 class="mb-2 text-xl font-semibold tracking-tight">
+    <a href={href} class="after:absolute after:inset-0">{title}</a>
+  </h3>
+  <p class="mb-5 text-sm leading-relaxed text-slate-600 dark:text-slate-400">{tagline}</p>
   {
     metrics.length > 0 && (
-      <dl class="mb-4 flex flex-wrap gap-x-5 gap-y-1">
+      <dl class="mb-5 space-y-1.5">
         {metrics.slice(0, 3).map((m) => (
-          <div>
-            <dt class="sr-only">{m.label}</dt>
-            <dd class="text-sm">
-              <span class="font-semibold text-accent-700 dark:text-accent-300">{m.value}</span>{' '}
-              <span class="text-slate-500 dark:text-slate-400">{m.label}</span>
-            </dd>
+          <div class="flex items-baseline gap-2 text-sm">
+            <dd class="font-display font-bold text-accent-700 dark:text-accent-400">{m.value}</dd>
+            <dt class="text-slate-600 dark:text-slate-400">{m.label}</dt>
           </div>
         ))}
       </dl>
     )
   }
-  <div class="mt-auto flex flex-wrap gap-1.5">
+  <div class="mb-5 flex flex-wrap gap-1.5">
     {stack.slice(0, 6).map((s) => <StackBadge label={s} />)}
   </div>
-  <span class="sr-only">{t('common.viewProject')}</span>
+  <span class="mt-auto inline-flex items-center gap-1 text-sm font-semibold text-accent-700 dark:text-accent-300" aria-hidden="true">
+    {t('common.viewProject')}
+    <Icon name="arrowRight" class="size-4 transition group-hover:translate-x-1" />
+  </span>
 </article>

@@ -1,0 +1,22 @@
+---
+// Titulo de seccion: la parte entre [corchetes] del texto va con el degradado de acento y debajo
+// hay una barra corta amarilla. Los corchetes viven en las traducciones (src/i18n/ui.ts).
+import { splitHighlight } from '../i18n/ui';
+
+interface Props {
+  text: string;
+  as?: 'h1' | 'h2';
+  id?: string;
+  center?: boolean;
+}
+const { text, as: Tag = 'h2', id, center = false } = Astro.props;
+const parts = splitHighlight(text);
+const size = Tag === 'h1' ? 'text-4xl sm:text-5xl' : 'text-3xl sm:text-4xl';
+---
+
+<div class:list={['mb-8', center && 'text-center']}>
+  <Tag id={id} class:list={[size, 'font-bold tracking-tight text-slate-900 dark:text-white']}>
+    {parts.map((p) => (p.highlight ? <span class="text-gradient">{p.text}</span> : p.text))}
+  </Tag>
+  <span class:list={['mt-4 block h-1 w-16 rounded-full bg-linear-to-r from-accent-400 to-accent-200', center && 'mx-auto']} aria-hidden="true"></span>
+</div>
