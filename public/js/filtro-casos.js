@@ -15,6 +15,10 @@
     });
   }
 
+  // ?tag=X llega desde las tecnologias de la portada y de cada proyecto: abre la lista ya filtrada.
+  const inicial = new URLSearchParams(location.search).get('tag');
+  if (inicial && [...botones].some((b) => b.dataset.tag === inicial)) aplicar(inicial);
+
   filtro.addEventListener('click', (e) => {
     const boton = e.target.closest('button[data-tag]');
     if (boton) aplicar(boton.dataset.tag);

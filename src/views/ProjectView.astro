@@ -7,7 +7,7 @@ import SectionTitle from '../components/SectionTitle.astro';
 import StackBadge from '../components/StackBadge.astro';
 import StatusBadge from '../components/StatusBadge.astro';
 import { projectUrl, routes, slugOf, useT, withBase, type Lang } from '../i18n/ui';
-import { getCases } from '../lib/content';
+import { getCases, techCasesUrl } from '../lib/content';
 
 interface Props {
   lang: Lang;
@@ -20,6 +20,7 @@ const slug = slugOf(project.id);
 const d = project.data;
 const { Content } = await render(project);
 const cases = (await getCases(lang)).filter((c) => c.data.project === slug);
+const casesFor = await techCasesUrl(lang);
 ---
 
 <Base lang={lang} title={d.title} description={d.summary} altUrl={projectUrl(other, slug)}>
@@ -89,7 +90,8 @@ const cases = (await getCases(lang)).filter((c) => c.data.project === slug);
         }
         <section class="card p-6">
           <h2 class="mb-4 text-sm font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">{t('project.stack')}</h2>
-          <div class="flex flex-wrap gap-1.5">{d.stack.map((s) => <StackBadge label={s} />)}</div>
+          <div class="flex flex-wrap gap-1.5">{d.stack.map((s) => <StackBadge label={s} href={casesFor(s)} />)}</div>
+          {d.stack.some((s) => casesFor(s)) && <p class="mt-3 text-xs text-slate-500 dark:text-slate-400">{t('project.stack.hint')}</p>}
         </section>
         {
           (d.links.length > 0 || d.demoOnRequest) && (

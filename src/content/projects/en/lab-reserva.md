@@ -1,7 +1,7 @@
 ---
 title: Lab-Reserva
 tagline: Booking for university computer labs, in production on Docker.
-summary: Web system where students and teachers book a single workstation or a whole lab, and administrators manage opening hours, closures, incidents and permissions. I designed it, built it and run it in production.
+summary: Web system where students and teachers book a single workstation or a whole lab, and administrators manage opening hours, closures, incidents and permissions. Designed, built and deployed to production end to end.
 status: production
 role: Design, full-stack development and deployment
 stack: [Laravel 12, PHP 8.4, Vue 3, Pinia, Tailwind CSS, MariaDB, Docker Compose, nginx, PHPUnit, Vitest, PHPStan]

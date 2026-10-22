@@ -1,6 +1,6 @@
 ---
 title: Server control panel
-tagline: My own tool to operate a Linux server over SSH, with zero external dependencies.
+tagline: In-house tool to operate a Linux server over SSH, with zero external dependencies.
 summary: A desktop panel to power on, shut down and monitor the services of an Ubuntu server from another machine on the network. It is a Node.js HTTP server without a single npm package, opened as a browser app window.
 status: production
 role: Design and development

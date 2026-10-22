@@ -9,7 +9,8 @@ import SectionTitle from '../components/SectionTitle.astro';
 import { site } from '../config/site';
 import { stackGroups } from '../config/stack';
 import { routes, splitHighlight, useT, withBase, type Lang } from '../i18n/ui';
-import { getCases, getProjects, projectTitles, totalTests } from '../lib/content';
+import { getCases, getProjects, projectTitles, techCasesUrl, totalTests } from '../lib/content';
+import { techInfo } from '../config/tech';
 
 interface Props {
   lang: Lang;
@@ -23,6 +24,7 @@ const featured = projects.filter((p) => p.data.featured);
 const allCases = await getCases(lang);
 const cases = allCases.filter((c) => c.data.featured).slice(0, 4);
 const titles = projectTitles(projects);
+const casesFor = await techCasesUrl(lang);
 // El boton del CV solo aparece cuando el PDF existe de verdad en public/.
 const hasCv = existsSync(`public${site.cv[lang]}`);
 
@@ -112,6 +114,7 @@ const role = splitHighlight(lang === 'es' ? 'Ingeniero de Software [Full-Stack]'
 
   <section class="container-page py-20" aria-labelledby="stack">
     <SectionTitle id="stack" text={t('home.stack')} />
+    <p class="-mt-2 mb-10 max-w-2xl text-lg text-slate-600 dark:text-slate-400">{t('home.stack.intro')}</p>
     <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {
         stackGroups.map((g) => (
@@ -123,12 +126,29 @@ const role = splitHighlight(lang === 'es' ? 'Ingeniero de Software [Full-Stack]'
               <h3 class="text-lg font-semibold">{g.label[lang]}</h3>
             </div>
             <ul class="space-y-1.5 text-sm text-slate-600 dark:text-slate-300">
-              {g.items.map((item) => (
-                <li class="flex items-center gap-2">
-                  <span class="size-1.5 shrink-0 rounded-full bg-accent-400" aria-hidden="true" />
-                  {typeof item === 'string' ? item : item[lang]}
-                </li>
-              ))}
+              {g.items.map((item) => {
+                const label = typeof item === 'string' ? item : item[lang];
+                const icon = techInfo(label).icon;
+                const href = casesFor(label);
+                return (
+                  <li class="flex items-center gap-2">
+                    {icon ? (
+                      <svg viewBox="0 0 24 24" class="size-4 shrink-0 text-slate-500 dark:text-slate-400" fill="currentColor" aria-hidden="true">
+                        <path d={icon.path} />
+                      </svg>
+                    ) : (
+                      <span class="mx-[0.3125rem] size-1.5 shrink-0 rounded-full bg-accent-400" aria-hidden="true" />
+                    )}
+                    {href ? (
+                      <a href={href} class="underline decoration-accent-400 decoration-2 underline-offset-4 hover:text-accent-700 dark:hover:text-accent-300">
+                        {label}
+                      </a>
+                    ) : (
+                      label
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </article>
         ))

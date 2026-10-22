@@ -1,7 +1,7 @@
 ---
 title: Lab-Reserva
 tagline: Reservas de laboratorios de cómputo universitarios, en producción sobre Docker.
-summary: Sistema web para que estudiantes y profesores reserven equipos o laboratorios completos, y para que la administración controle horarios, cierres, incidencias y permisos. Lo diseñé, lo construí y lo opero en producción.
+summary: Sistema web para que estudiantes y profesores reserven equipos o laboratorios completos, y para que la administración controle horarios, cierres, incidencias y permisos. Diseñado, construido y desplegado en producción de punta a punta.
 status: production
 role: Diseño, desarrollo full-stack y despliegue
 stack: [Laravel 12, PHP 8.4, Vue 3, Pinia, Tailwind CSS, MariaDB, Docker Compose, nginx, PHPUnit, Vitest, PHPStan]

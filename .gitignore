@@ -26,3 +26,6 @@ pnpm-debug.log*
 # destino de publicacion (usuario y host del servidor)
 .deploy.env
 .verificar.local
+
+# notas locales del dueno (pendientes, borradores)
+*.local.md

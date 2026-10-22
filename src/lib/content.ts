@@ -1,5 +1,6 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { langOf, slugOf, type Lang } from '../i18n/ui';
+import { techInfo } from '../config/tech';
+import { langOf, routes, slugOf, type Lang } from '../i18n/ui';
 
 export async function getProjects(lang: Lang) {
   const all = await getCollection('projects', ({ id, data }) => langOf(id) === lang && !data.draft);
@@ -33,4 +34,15 @@ export function tagsByFrequency(cases: CollectionEntry<'cases'>[], min = 2) {
   return [...counts.entries()]
     .filter(([, n]) => n >= min)
     .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([tag]) => tag);
+}
+
+// Enlace de una tecnologia a la lista de desafios filtrada por ella. Solo si esa etiqueta tiene boton
+// en el filtro (tagsByFrequency): un enlace que abre la lista sin filtrar no aporta nada.
+export async function techCasesUrl(lang: Lang) {
+  const tags = new Set(tagsByFrequency(await getCases(lang)));
+  return (label: string) => {
+    const raw = techInfo(label).tag;
+    const tag = typeof raw === 'string' ? raw : raw?.[lang];
+    return tag && tags.has(tag) ? `${routes.cases[lang]}?tag=${encodeURIComponent(tag)}` : undefined;
+  };
 }

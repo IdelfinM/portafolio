@@ -39,7 +39,9 @@ function* ficheros(dir) {
 
 const hallazgos = [];
 for (const ruta of ficheros(DIST)) {
-  const lineas = readFileSync(ruta, 'utf8').split('\n');
+  // El trazo de un <path> son solo coordenadas, y algunas parecen IPs (el logo de HTML5 lleva
+  // "10.059.003.23"). Se vacia antes de revisar; el texto visible y los demas atributos siguen igual.
+  const lineas = readFileSync(ruta, 'utf8').replace(/ d="[^"]*"/g, ' d=""').split('\n');
   lineas.forEach((linea, i) => {
     for (const { patron, motivo } of reglas) {
       const m = linea.match(patron);

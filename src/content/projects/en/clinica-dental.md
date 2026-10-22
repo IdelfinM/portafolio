@@ -1,7 +1,7 @@
 ---
 title: Dental appointment platform
 tagline: Multi-clinic scheduling and records SaaS, used by a real clinic.
-summary: A platform where each clinic has its own portal, schedule and patients. Patients book on their own through a four-step wizard, and the clinic keeps clinical and financial records. I built it and maintain it in production, on a Linux server I administer myself.
+summary: A platform where each clinic has its own portal, schedule and patients. Patients book on their own through a four-step wizard, and the clinic keeps clinical and financial records. Built, deployed and maintained in production end to end, on a least-privilege Linux infrastructure.
 status: production
 role: Full-stack development, infrastructure and support
 stack: [Laravel 13, PHP 8.4, Vue 3, Vuetify, Pinia, MariaDB, nginx, PHP-FPM, Ubuntu, PHPUnit]
@@ -26,4 +26,6 @@ order: 2
 
 The clinic using it is not named here, and no screenshot contains real patient data. Demos use made-up data.
 
-I also administer the production server: nginx, PHP-FPM, MariaDB with a least-privilege user, TLS certificates, security headers, rate limiting on the authentication endpoints, and encrypted backups.
+## Security and operations
+
+Fine-grained, role-based access controls in the API and the router, MariaDB with a least-privilege user (data read and write only, no schema permissions), TLS certificates, security headers, rate limiting on the authentication endpoints, and daily encrypted backups. The application is served with nginx and PHP-FPM, and urgent security patches are applied the same day they ship.

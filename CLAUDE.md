@@ -45,6 +45,11 @@ servidor. Detalle operativo en `docs/DEPLOY.md`. **El repo es publico**: nada pr
 - Titulos de seccion con `SectionTitle.astro`: la parte entre `[corchetes]` de la traduccion va resaltada;
   `plain()` los quita para `<title>` y `aria-label`.
 - Iconos: `Icon.astro` (SVG en linea); para uno nuevo, anadir su trazo ahi.
+- Logotipos de tecnologias: `src/config/tech.ts` (simple-icons, CC0, en un color). Ahi tambien se decide a que
+  etiqueta de desafios lleva cada tecnologia (`?tag=` en la lista, lo lee `public/js/filtro-casos.js`); solo se
+  enlaza si esa etiqueta tiene boton en el filtro. `StackBadge` con `href` nunca dentro de una tarjeta-enlace.
+- Tono (correcciones 2026-10-21): titulos que comunican valor ("Desafios de ingenieria", no "Problemas resueltos"),
+  resumenes de proyecto en redaccion objetiva, nada de "el servidor lo administro yo": se describe lo implementado.
 
 ## CSP estricta
 

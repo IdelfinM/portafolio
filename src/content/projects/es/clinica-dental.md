@@ -1,7 +1,7 @@
 ---
 title: Plataforma de citas odontológicas
 tagline: SaaS multiclínica de agenda y expedientes, en uso por una clínica real.
-summary: Plataforma donde cada clínica tiene su propio portal, su agenda y sus pacientes. Los pacientes reservan solos en un asistente de cuatro pasos y la clínica lleva el expediente clínico y financiero. La desarrollé y la mantengo en producción, en un servidor Linux que administro yo mismo.
+summary: Plataforma donde cada clínica tiene su propio portal, su agenda y sus pacientes. Los pacientes reservan solos en un asistente de cuatro pasos y la clínica lleva el expediente clínico y financiero. Desarrollo, despliegue y mantenimiento en producción de punta a punta, sobre una infraestructura Linux con privilegios mínimos.
 status: production
 role: Desarrollo full-stack, infraestructura y soporte
 stack: [Laravel 13, PHP 8.4, Vue 3, Vuetify, Pinia, MariaDB, nginx, PHP-FPM, Ubuntu, PHPUnit]
@@ -26,4 +26,6 @@ order: 2
 
 La clínica que la usa no se nombra aquí y ninguna captura contiene datos reales de pacientes. La demostración se hace con datos ficticios.
 
-El servidor de producción también lo administro yo: nginx, PHP-FPM, MariaDB con un usuario de mínimos privilegios, certificados TLS, cabeceras de seguridad, rate limiting en los endpoints de autenticación y respaldos cifrados.
+## Seguridad y operación
+
+Controles de acceso granulares por rol en la API y en el router, MariaDB con un usuario de privilegios mínimos (solo lectura y escritura de datos, sin permisos sobre el esquema), certificados TLS, cabeceras de seguridad, rate limiting en los endpoints de autenticación y respaldos diarios cifrados. La aplicación se sirve con nginx y PHP-FPM, y los parches de seguridad urgentes se aplican el mismo día de su publicación.
